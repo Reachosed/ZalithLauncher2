@@ -84,6 +84,7 @@ import com.movtery.zalithlauncher.ui.AndroidStringText
 import com.movtery.zalithlauncher.ui.androidText
 import com.movtery.zalithlauncher.ui.components.BackgroundCard
 import com.movtery.zalithlauncher.ui.components.CardTitleLayout
+import com.movtery.zalithlauncher.ui.components.RemoteSessionBanner
 import com.movtery.zalithlauncher.ui.components.TextRailItem
 import com.movtery.zalithlauncher.ui.guide.sendStartGuideOnce
 import com.movtery.zalithlauncher.ui.screens.BackStackNavKey
@@ -212,6 +213,11 @@ fun MainScreen(
                 changeExpandedState = {
                     changeTasksExpandedState()
                 },
+            )
+
+            //被控端会话提示条：远程控制开启时才会出现，其余情况不占空间
+            RemoteSessionBanner(
+                modifier = Modifier.fillMaxWidth()
             )
 
             Box(

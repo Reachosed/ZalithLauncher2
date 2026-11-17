@@ -104,6 +104,10 @@ sealed interface NormalNavKey : TitledNavKey {
         @Serializable data object AboutInfo : Settings {
             @Contextual override val title: AndroidStringText = androidText(R.string.settings_tab_info_about)
         }
+        /** 远程控制屏幕（非官方修改版新增） */
+        @Serializable data object RemoteControl : Settings {
+            @Contextual override val title: AndroidStringText = androidText(R.string.settings_tab_remote)
+        }
     }
 
     /** 版本详细设置嵌套子屏幕 */

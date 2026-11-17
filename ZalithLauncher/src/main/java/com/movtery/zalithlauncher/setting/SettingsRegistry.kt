@@ -38,6 +38,20 @@ import com.movtery.zalithlauncher.setting.unit.parcelableSettingUnit
 abstract class SettingsRegistry {
     protected val refreshableList = mutableListOf<AbstractSettingUnit<*>>()
 
+    /**
+     * 全部已注册的设置项，顺序即注册顺序。
+     *
+     * 供配置快照导出 / 远程控制枚举使用——这是本启动器"没有统一配置文件"的补丁：
+     * 有了这份清单，才能把所有散落在 MMKV 里的键值整体序列化成一份 JSON。
+     */
+    val units: List<AbstractSettingUnit<*>>
+        get() = refreshableList
+
+    /**
+     * @return 按键名查找设置项
+     */
+    fun findUnit(key: String): AbstractSettingUnit<*>? = refreshableList.firstOrNull { it.key == key }
+
     fun reloadAll() = refreshableList.forEach { unit ->
         if (unit.isMaterialized) unit.init()
     }

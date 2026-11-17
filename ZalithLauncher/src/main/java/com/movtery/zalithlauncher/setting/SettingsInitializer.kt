@@ -19,6 +19,7 @@
 package com.movtery.zalithlauncher.setting
 
 import android.content.Context
+import com.movtery.zalithlauncher.remote.RemoteSettings
 import com.movtery.zalithlauncher.utils.device.Architecture
 import com.movtery.zalithlauncher.utils.platform.bytesToMB
 import com.movtery.zalithlauncher.utils.platform.getTotalMemory
@@ -38,6 +39,7 @@ fun loadAllSettings(context: Context, reloadAll: Boolean = false) {
         LauncherSettings.reloadAll()
         GameUiSettings.reloadAll()
         MiscSettings.reloadAll()
+        RemoteSettings.reloadAll()
         return
     }
 

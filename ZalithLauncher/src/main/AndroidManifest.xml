@@ -158,6 +158,17 @@
                 android:value="Keep the launcher process alive while background tasks such as downloads and installations are running" />
         </service>
 
+        <!-- 远程控制被控端（非官方修改版新增）：前台常驻，保持与中继的长连接 -->
+        <service
+            android:name=".remote.RemoteHostService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_TYPE"
+                android:value="Keep the launcher reachable so that a paired device can read or modify launcher settings and transfer small configuration files" />
+        </service>
+
         <service
             android:name=".game.download.jvm_server.JvmService"
             android:enabled="true"
