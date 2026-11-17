@@ -43,6 +43,8 @@ jobs:
 
       - name: Generate signing key
         run: |
+          # 仓库里自带的 zalith_launcher.jks 密码未知，先移除再生成构建用证书
+          rm -f ZalithLauncher/zalith_launcher.jks
           keytool -genkeypair \
             -keystore ZalithLauncher/zalith_launcher.jks \
             -alias movtery_zalith \
