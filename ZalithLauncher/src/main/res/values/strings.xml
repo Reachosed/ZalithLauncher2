@@ -1735,6 +1735,8 @@
     <string name="settings_tab_control_manage">Controls</string>
     <!-- Name of the About category on the settings screen and the title of its page -->
     <string name="settings_tab_info_about">About</string>
+    <!-- Name of the Remote Control category on the settings screen and the title of its page (unofficial add-on) -->
+    <string name="settings_tab_remote">Remote Control</string>
     <!-- Settings item title in the Renderer tab to choose the global renderer -->
     <string name="settings_renderer_global_renderer_title">Global Renderer</string>
     <!-- Summary of the global renderer item in the Renderer settings tab -->

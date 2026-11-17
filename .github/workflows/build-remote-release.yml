@@ -1,0 +1,80 @@
+name: Build Release APK (remote control, arm64)
+
+# 手动触发，或在 feat/remote-relay 分支推送时自动构建。
+# 产物：单 ABI（arm64-v8a）的 release APK，已签名，可直接安装。
+on:
+  workflow_dispatch:
+  push:
+    branches: [ feat/remote-relay ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Rust toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          . "$HOME/.cargo/env"
+          rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+          cargo install cargo-ndk --locked --version 3.5.4 || cargo install cargo-ndk --locked
+
+      - name: Set up Android SDK components
+        run: |
+          SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.2" \
+            "build-tools;37.0.0" \
+            "ndk;25.2.9519653"
+
+      - name: Generate signing key
+        run: |
+          # 仓库里自带的 zalith_launcher.jks 密码未知，先移除再生成构建用证书
+          rm -f ZalithLauncher/zalith_launcher.jks
+          keytool -genkeypair \
+            -keystore ZalithLauncher/zalith_launcher.jks \
+            -alias movtery_zalith \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "$STORE_PASSWORD" -keypass "$KEY_PASSWORD" \
+            -dname "CN=ZL2 Remote, OU=Build, O=Local, C=CN"
+        env:
+          STORE_PASSWORD: zl2remote-control
+          KEY_PASSWORD: zl2remote-control
+
+      - name: Build release APK (arm64 only)
+        run: |
+          SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          export ANDROID_NDK_HOME="$SDK_ROOT/ndk/25.2.9519653"
+          export ANDROID_NDK_ROOT="$SDK_ROOT/ndk/25.2.9519653"
+          chmod +x ./gradlew
+          ./gradlew :ZalithLauncher:assembleRelease --no-daemon --console=plain -Darch=arm64
+        env:
+          STORE_PASSWORD: zl2remote-control
+          KEY_PASSWORD: zl2remote-control
+
+      - name: Show APK info
+        run: |
+          ls -lh ZalithLauncher/build/outputs/apk/release/
+          APK=$(ls ZalithLauncher/build/outputs/apk/release/*.apk | head -1)
+          "${ANDROID_SDK_ROOT:-$ANDROID_HOME}/build-tools/37.0.0/apksigner" verify --print-certs "$APK" | head -3
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: zl2-remote-control-release-apk
+          path: ZalithLauncher/build/outputs/apk/release/*.apk
+          retention-days: 30

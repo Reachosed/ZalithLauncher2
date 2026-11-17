@@ -63,6 +63,7 @@ import com.movtery.zalithlauncher.ui.screens.content.settings.GameSettingsScreen
 import com.movtery.zalithlauncher.ui.screens.content.settings.GamepadSettingsScreen
 import com.movtery.zalithlauncher.ui.screens.content.settings.JavaManageScreen
 import com.movtery.zalithlauncher.ui.screens.content.settings.LauncherSettingsScreen
+import com.movtery.zalithlauncher.ui.screens.content.settings.RemoteControlScreen
 import com.movtery.zalithlauncher.ui.screens.content.settings.RendererSettingsScreen
 import com.movtery.zalithlauncher.ui.screens.navigateOnce
 import com.movtery.zalithlauncher.ui.screens.onBack
@@ -117,6 +118,7 @@ private val settingItems = listOf(
     CategoryItem(NormalNavKey.Settings.Launcher, { CategoryIcon(R.drawable.ic_setting_launcher, R.string.settings_tab_launcher) }, R.string.settings_tab_launcher),
     CategoryItem(NormalNavKey.Settings.JavaManager, { CategoryIcon(R.drawable.ic_java, R.string.settings_tab_java_manage) }, R.string.settings_tab_java_manage, division = true),
     CategoryItem(NormalNavKey.Settings.ControlManager, { CategoryIcon(R.drawable.ic_videogame_asset_outlined, R.string.settings_tab_control_manage) }, R.string.settings_tab_control_manage),
+    CategoryItem(NormalNavKey.Settings.RemoteControl, { CategoryIcon(R.drawable.ic_settings_filled, R.string.settings_tab_remote) }, R.string.settings_tab_remote),
     CategoryItem(NormalNavKey.Settings.AboutInfo, { CategoryIcon(R.drawable.ic_info_outlined, R.string.settings_tab_info_about) }, R.string.settings_tab_info_about, division = true)
 )
 
@@ -227,6 +229,13 @@ private fun NavigationUI(
                 }
                 entry<NormalNavKey.Settings.ControlManager> {
                     ControlManageScreen(key, settingsScreenKey, mainScreenKey, eventViewModel, submitError)
+                }
+                entry<NormalNavKey.Settings.RemoteControl> {
+                    RemoteControlScreen(
+                        key = key,
+                        settingsScreenKey = settingsScreenKey,
+                        mainScreenKey = mainScreenKey
+                    )
                 }
                 entry<NormalNavKey.Settings.AboutInfo> {
                     AboutInfoScreen(
